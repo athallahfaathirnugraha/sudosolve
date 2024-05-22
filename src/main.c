@@ -24,6 +24,13 @@ int main()
         if (IsKeyPressed(KEY_K) && s_cell[1] > 0) s_cell[1] -= 1;
         if (IsKeyPressed(KEY_L) && s_cell[0] < 8) s_cell[0] += 1;
 
+        {
+            size_t i = s_cell[1] * 9 + s_cell[0];
+
+            if (IsKeyPressed(KEY_I) && board[i] < 9) board[s_cell[1] * 9 + s_cell[0]] += 1;
+            if (IsKeyPressed(KEY_O) && board[i] > -1) board[s_cell[1] * 9 + s_cell[0]] -= 1;
+        }
+
         BeginDrawing();
 
         ClearBackground(RAYWHITE);
