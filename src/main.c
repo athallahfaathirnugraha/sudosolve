@@ -27,8 +27,8 @@ int main()
         {
             size_t i = s_cell[1] * 9 + s_cell[0];
 
-            if (IsKeyPressed(KEY_I) && board[i] < 9) board[s_cell[1] * 9 + s_cell[0]] += 1;
-            if (IsKeyPressed(KEY_O) && board[i] > -1) board[s_cell[1] * 9 + s_cell[0]] -= 1;
+            if (IsKeyPressed(KEY_I) && board[i] < 9) board[i] += 1;
+            if (IsKeyPressed(KEY_O) && board[i] > -1) board[i] -= 1;
         }
 
         BeginDrawing();
