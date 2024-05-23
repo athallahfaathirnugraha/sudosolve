@@ -9,7 +9,7 @@ LFLAGS := -framework CoreVideo -framework IOKit -framework Cocoa -framework GLUT
 
 DEPS := deps/raylib/src/libraylib.a
 
-.PHONY: clean_all clean_raylib clean_list clean_vector clean
+.PHONY: clean_all clean_raylib clean
 
 out/sudosolve: $(DEPREQ) $(OBJS) $(DEPS)
 	@echo "creating executable"
