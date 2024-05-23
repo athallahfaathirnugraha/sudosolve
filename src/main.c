@@ -9,6 +9,12 @@
 #define BOARD_SIZE 549
 #define CELL_SIZE BOARD_SIZE / 9
 
+#ifdef RELEASE
+#define LOG(x)
+#else
+#define LOG(...) printf(__VA_ARGS__)
+#endif
+
 int main()
 {
     board board;
@@ -29,6 +35,23 @@ int main()
 
             if (IsKeyPressed(KEY_I) && board[i] < 9) board[i] += 1;
             if (IsKeyPressed(KEY_O) && board[i] > -1) board[i] -= 1;
+        }
+
+        if (IsKeyPressed(KEY_ENTER)) {
+            size_t neighbors_[40];
+            neighbors(s_cell[0], s_cell[1], neighbors_);
+
+            LOG("neighbors at %zu, %zu:\n", s_cell[0], s_cell[1]);
+
+            size_t i1 = 1;
+            size_t i2 = 0;
+
+            while (i1 <= 20) {
+                LOG("%zu. x = %zu, y = %zu\n", i1, neighbors_[i2], neighbors_[i2 + 1]);
+
+                i2 += 2;
+                i1++;
+            }
         }
 
         BeginDrawing();
