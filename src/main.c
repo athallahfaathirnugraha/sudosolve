@@ -18,7 +18,7 @@
 int main()
 {
     board board;
-    for (int i = 0; i < 81; i++) board[i] = -1;
+    for (int i = 0; i < 81; i++) board[i] = 0;
 
     size_t s_cell[2] = { 0, 0 };
     
@@ -34,10 +34,12 @@ int main()
             size_t i = s_cell[1] * 9 + s_cell[0];
 
             if (IsKeyPressed(KEY_I) && board[i] < 9) board[i] += 1;
-            if (IsKeyPressed(KEY_O) && board[i] > -1) board[i] -= 1;
+            if (IsKeyPressed(KEY_O) && board[i] > 0) board[i] -= 1;
         }
 
         if (IsKeyPressed(KEY_ENTER)) {
+#ifndef RELEASE
+            // neighbors
             size_t neighbors_[40];
             neighbors(s_cell[0], s_cell[1], neighbors_);
 
@@ -52,6 +54,18 @@ int main()
                 i2 += 2;
                 i1++;
             }
+
+            // possi
+            int possi_[9]; size_t possi_len;
+            possi(board, s_cell[0], s_cell[1], possi_, &possi_len);
+
+            LOG("possi at %zu, %zu: ", s_cell[0], s_cell[1]);
+
+            for (size_t i = 0; i < possi_len; i++)
+                LOG("%i, ", possi_[i]);
+
+            LOG("\n");
+#endif
         }
 
         BeginDrawing();
@@ -64,7 +78,7 @@ int main()
         for (int i = 0; i < 81; i++) {
             int num = board[i];
 
-            if (num == -1) continue;
+            if (num == 0) continue;
 
             char chr[2];
             sprintf(chr, "%d", num);

@@ -1,5 +1,10 @@
 #include "board.h"
 
+int board_get(board board, size_t x, size_t y)
+{
+    return board[y * 9 + x];
+}
+
 void neighbors(size_t x_, size_t y_, size_t *out)
 {
     size_t out_i = 0;
@@ -35,4 +40,27 @@ void neighbors(size_t x_, size_t y_, size_t *out)
 }
 
 void possi(board board, size_t x, size_t y, int *out, size_t *out_len)
-{}
+{
+    size_t neighbors_[40];
+    neighbors(x, y, neighbors_);
+
+    int exists[9] = { 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+
+    for (size_t i = 0; i <= 38; i += 2) {
+        int g = board_get(board, neighbors_[i], neighbors_[i + 1]);
+        if (g == 0) continue;
+        exists[g - 1] = 1;
+    }
+
+    *out_len = 0;
+
+    size_t i = 0;
+    size_t out_i = 0;
+
+    for (; i < 9; i++) {
+        if (!exists[i]) {
+            (*out_len)++;
+            out[out_i++] = i + 1;
+        }
+    }
+}

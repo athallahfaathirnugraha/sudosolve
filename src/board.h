@@ -3,8 +3,10 @@
 
 #include <stdlib.h>
 
-// -1 = empty cell
+// 0 = empty cell
 typedef int board[81];
+
+int board_get(board board, size_t x, size_t y);
 
 // usage:
 // size_t neighbors_[40];
@@ -14,8 +16,8 @@ typedef int board[81];
 void neighbors(size_t x, size_t y, size_t *out);
 
 // usage:
-// int possi[9]; size_t possi_len;
-// possi(board, x, y, possi, &possi_len);
+// int possi_[9]; size_t possi_len;
+// possi(board, x, y, possi_, &possi_len);
 void possi(board board, size_t x, size_t y, int *out, size_t *out_len);
 
 #endif
