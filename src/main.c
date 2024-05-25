@@ -41,6 +41,8 @@ int main()
         }
 
         if (IsKeyPressed(KEY_ENTER)) {
+            solve(board_, solutions, &sol_len);
+
 #ifndef RELEASE
             // neighbors
             {
@@ -72,11 +74,7 @@ int main()
 
                 LOG("\n");
             }
-#endif
 
-            solve(board_, solutions, &sol_len);
-
-#ifndef RELEASE
             LOG("solutions (%zu):\n", sol_len);
             
             // iter solutions
