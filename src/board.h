@@ -23,7 +23,6 @@ void neighbors(size_t x, size_t y, size_t *out);
 // possi(board, x, y, possi_, &possi_len);
 void possi(board board, size_t x, size_t y, int *out, size_t *out_len);
 
-// you must free the solutions later.
 void solve(board board_, board *solutions, size_t *sol_len);
 
 #endif
