@@ -40,32 +40,39 @@ int main()
         if (IsKeyPressed(KEY_ENTER)) {
 #ifndef RELEASE
             // neighbors
-            size_t neighbors_[40];
-            neighbors(s_cell[0], s_cell[1], neighbors_);
+            {
+                size_t neighbors_[40];
+                neighbors(s_cell[0], s_cell[1], neighbors_);
 
-            LOG("neighbors at %zu, %zu:\n", s_cell[0], s_cell[1]);
+                LOG("neighbors at %zu, %zu:\n", s_cell[0], s_cell[1]);
 
-            size_t i1 = 1;
-            size_t i2 = 0;
+                size_t i1 = 1;
+                size_t i2 = 0;
 
-            while (i1 <= 20) {
-                LOG("%zu. x = %zu, y = %zu\n", i1, neighbors_[i2], neighbors_[i2 + 1]);
+                while (i1 <= 20) {
+                    LOG("%zu. x = %zu, y = %zu\n", i1, neighbors_[i2], neighbors_[i2 + 1]);
 
-                i2 += 2;
-                i1++;
+                    i2 += 2;
+                    i1++;
+                }
             }
 
             // possi
-            int possi_[9]; size_t possi_len;
-            possi(board, s_cell[0], s_cell[1], possi_, &possi_len);
+            {
+                int possi_[9]; size_t possi_len;
+                possi(board, s_cell[0], s_cell[1], possi_, &possi_len);
 
-            LOG("possi at %zu, %zu: ", s_cell[0], s_cell[1]);
+                LOG("possi at %zu, %zu (%zu) total: ", s_cell[0], s_cell[1], possi_len);
 
-            for (size_t i = 0; i < possi_len; i++)
-                LOG("%i, ", possi_[i]);
+                for (size_t i = 0; i < possi_len; i++)
+                    LOG("%i, ", possi_[i]);
 
-            LOG("\n");
+                LOG("\n");
+            }
 #endif
+
+            size_t sol_len;
+            solve(board, NULL, &sol_len);
         }
 
         BeginDrawing();
@@ -83,8 +90,8 @@ int main()
             char chr[2];
             sprintf(chr, "%d", num);
 
-            int x = i % 9;
-            int y = (i - x) / 9;
+            size_t x, y;
+            itoxy(i, &x, &y);
 
             int sx = x * CELL_SIZE;
             int sy = y * CELL_SIZE;
