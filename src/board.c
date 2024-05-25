@@ -84,7 +84,7 @@ void possi(board board, size_t x, size_t y, int *out, size_t *out_len)
     }
 }
 
-static int solve_(board board_, board *solutions, size_t *sol_len)
+static void solve_(board board_, board *solutions, size_t *sol_len)
 {
     // copy board
     board board_c;
@@ -102,23 +102,11 @@ static int solve_(board board_, board *solutions, size_t *sol_len)
             int possi_[9]; size_t possi_len;
             possi(board_c, x, y, possi_, &possi_len);
 
-            if (possi_len == 0) return -1;
+            if (possi_len == 0) return;
 
             for (size_t possi_i = 0; possi_i < possi_len; possi_i++) {
                 board_c[i] = possi_[possi_i];
-                int sres = solve_(board_c, solutions, sol_len);
-
-                // if (sres == -1) {
-                //     // remove possi at index possi_i
-                //     memmove(
-                //         possi_ + possi_i,
-                //         possi_ + possi_i + 1,
-                //         (possi_len - 1 - possi_i) * sizeof(int)
-                //     );
-
-                //     possi_len--;
-                //     possi_i--;
-                // }
+                solve_(board_c, solutions, sol_len);
             }
 
             break;
@@ -129,8 +117,6 @@ static int solve_(board board_, board *solutions, size_t *sol_len)
         printf("found sol\n");
         print_board(board_c);
     }
-
-    return 0;
 }
 
 void solve(board board_, board *solutions, size_t *sol_len)
