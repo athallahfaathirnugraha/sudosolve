@@ -15,12 +15,6 @@
 #define LOG(...) printf(__VA_ARGS__)
 #endif
 
-void free_solution(board *solutions, size_t sol_len)
-{
-    LOG("freeing solutions (sol_len = %zu)\n", sol_len);
-    for (size_t i = 0; i < sol_len; i++) free(solutions[i]);
-}
-
 int main()
 {
     board board_;
@@ -47,8 +41,6 @@ int main()
         }
 
         if (IsKeyPressed(KEY_ENTER)) {
-            free_solution(solutions, sol_len);
-            
 #ifndef RELEASE
             // neighbors
             {
@@ -129,8 +121,6 @@ int main()
         
         EndDrawing();
     }
-
-    free_solution(solutions, sol_len);
 
     CloseWindow();
 }
