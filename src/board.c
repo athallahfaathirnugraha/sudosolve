@@ -2,7 +2,7 @@
 #include <string.h>
 #include "board.h"
 
-static void print_board(board board)
+void print_board(board board)
 {
     for (int y = 0; y < 9; y++) {
         for (int x = 0; x < 9; x++) {
@@ -113,9 +113,10 @@ static void solve_(board board_, board *solutions, size_t *sol_len)
         }
     }
 
-    if (!found_empty) {
-        printf("found sol\n");
-        print_board(board_c);
+    if (!found_empty && *sol_len < 100) {
+        // add to array of solution
+        memcpy(solutions + *sol_len, board_c, sizeof(board));
+        (*sol_len)++;
     }
 }
 

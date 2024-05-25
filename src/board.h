@@ -6,6 +6,8 @@
 // 0 = empty cell
 typedef int board[81];
 
+void print_board(board board);
+
 int board_get(board board, size_t x, size_t y);
 void itoxy(size_t i, size_t *x, size_t *y);
 

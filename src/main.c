@@ -15,12 +15,21 @@
 #define LOG(...) printf(__VA_ARGS__)
 #endif
 
+void free_solution(board *solutions, size_t sol_len)
+{
+    LOG("freeing solutions (sol_len = %zu)\n", sol_len);
+    for (size_t i = 0; i < sol_len; i++) free(solutions[i]);
+}
+
 int main()
 {
-    board board;
-    for (int i = 0; i < 81; i++) board[i] = 0;
+    board board_;
+    for (int i = 0; i < 81; i++) board_[i] = 0;
 
     size_t s_cell[2] = { 0, 0 };
+
+    board solutions[100];
+    size_t sol_len = 0;
     
     InitWindow(BOARD_SIZE, BOARD_SIZE, "sudoku solver");
 
@@ -33,11 +42,13 @@ int main()
         {
             size_t i = s_cell[1] * 9 + s_cell[0];
 
-            if (IsKeyPressed(KEY_I) && board[i] < 9) board[i] += 1;
-            if (IsKeyPressed(KEY_O) && board[i] > 0) board[i] -= 1;
+            if (IsKeyPressed(KEY_I) && board_[i] < 9) board_[i] += 1;
+            if (IsKeyPressed(KEY_O) && board_[i] > 0) board_[i] -= 1;
         }
 
         if (IsKeyPressed(KEY_ENTER)) {
+            free_solution(solutions, sol_len);
+            
 #ifndef RELEASE
             // neighbors
             {
@@ -60,7 +71,7 @@ int main()
             // possi
             {
                 int possi_[9]; size_t possi_len;
-                possi(board, s_cell[0], s_cell[1], possi_, &possi_len);
+                possi(board_, s_cell[0], s_cell[1], possi_, &possi_len);
 
                 LOG("possi at %zu, %zu (%zu) total: ", s_cell[0], s_cell[1], possi_len);
 
@@ -71,8 +82,16 @@ int main()
             }
 #endif
 
-            size_t sol_len;
-            solve(board, NULL, &sol_len);
+            solve(board_, solutions, &sol_len);
+
+#ifndef RELEASE
+            LOG("solutions (%zu):\n", sol_len);
+            
+            // iter solutions
+            for (size_t i = 0; i < sol_len; i++) {
+                print_board(solutions[i]);
+            }
+#endif
         }
 
         BeginDrawing();
@@ -83,7 +102,7 @@ int main()
         for (int y = 0; y <= BOARD_SIZE; y += CELL_SIZE) DrawLine(0, y, BOARD_SIZE, y, BLACK);
 
         for (int i = 0; i < 81; i++) {
-            int num = board[i];
+            int num = board_[i];
 
             if (num == 0) continue;
 
@@ -110,6 +129,8 @@ int main()
         
         EndDrawing();
     }
+
+    free_solution(solutions, sol_len);
 
     CloseWindow();
 }
