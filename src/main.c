@@ -93,6 +93,7 @@ int main()
                     // iter solutions
                     for (size_t i = 0; i < sol_len; i++) {
                         print_board(solutions[i]);
+                        LOG("\n");
                     }
 #endif
                 }
