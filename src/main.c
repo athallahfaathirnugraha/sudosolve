@@ -15,8 +15,17 @@
 #define LOG(...) printf(__VA_ARGS__)
 #endif
 
+typedef enum state
+{
+    BOARD_STATE,
+    SOLUTION_STATE,
+} state;
+
 int main()
 {
+    state state = BOARD_STATE;
+    size_t solution_index = 0;
+    
     board board_;
     for (int i = 0; i < 81; i++) board_[i] = 0;
 
@@ -28,60 +37,87 @@ int main()
     InitWindow(BOARD_SIZE, BOARD_SIZE, "sudoku solver");
 
     while (!WindowShouldClose()) {
-        if (IsKeyPressed(KEY_H) && s_cell[0] > 0) s_cell[0] -= 1;
-        if (IsKeyPressed(KEY_J) && s_cell[1] < 8) s_cell[1] += 1;
-        if (IsKeyPressed(KEY_K) && s_cell[1] > 0) s_cell[1] -= 1;
-        if (IsKeyPressed(KEY_L) && s_cell[0] < 8) s_cell[0] += 1;
+        switch (state) {
+            case BOARD_STATE:
+                if (IsKeyPressed(KEY_H) && s_cell[0] > 0) s_cell[0] -= 1;
+                if (IsKeyPressed(KEY_J) && s_cell[1] < 8) s_cell[1] += 1;
+                if (IsKeyPressed(KEY_K) && s_cell[1] > 0) s_cell[1] -= 1;
+                if (IsKeyPressed(KEY_L) && s_cell[0] < 8) s_cell[0] += 1;
 
-        {
-            size_t i = s_cell[1] * 9 + s_cell[0];
+                {
+                    size_t i = s_cell[1] * 9 + s_cell[0];
 
-            if (IsKeyPressed(KEY_I) && board_[i] < 9) board_[i] += 1;
-            if (IsKeyPressed(KEY_O) && board_[i] > 0) board_[i] -= 1;
-        }
+                    if (IsKeyPressed(KEY_I) && board_[i] < 9) board_[i] += 1;
+                    if (IsKeyPressed(KEY_O) && board_[i] > 0) board_[i] -= 1;
+                }
 
-        if (IsKeyPressed(KEY_ENTER)) {
-            solve(board_, solutions, &sol_len);
+                if (IsKeyPressed(KEY_ENTER)) {
+                    solve(board_, solutions, &sol_len);
+                    state = SOLUTION_STATE;
+                    solution_index = 0;
 
 #ifndef RELEASE
-            // neighbors
-            {
-                size_t neighbors_[40];
-                neighbors(s_cell[0], s_cell[1], neighbors_);
+                    // neighbors
+                    {
+                        size_t neighbors_[40];
+                        neighbors(s_cell[0], s_cell[1], neighbors_);
 
-                LOG("neighbors at %zu, %zu:\n", s_cell[0], s_cell[1]);
+                        LOG("neighbors at %zu, %zu:\n", s_cell[0], s_cell[1]);
 
-                size_t i1 = 1;
-                size_t i2 = 0;
+                        size_t i1 = 1;
+                        size_t i2 = 0;
 
-                while (i1 <= 20) {
-                    LOG("%zu. x = %zu, y = %zu\n", i1, neighbors_[i2], neighbors_[i2 + 1]);
+                        while (i1 <= 20) {
+                            LOG("%zu. x = %zu, y = %zu\n", i1, neighbors_[i2], neighbors_[i2 + 1]);
 
-                    i2 += 2;
-                    i1++;
-                }
-            }
+                            i2 += 2;
+                            i1++;
+                        }
+                    }
 
-            // possi
-            {
-                int possi_[9]; size_t possi_len;
-                possi(board_, s_cell[0], s_cell[1], possi_, &possi_len);
+                    // possi
+                    {
+                        int possi_[9]; size_t possi_len;
+                        possi(board_, s_cell[0], s_cell[1], possi_, &possi_len);
 
-                LOG("possi at %zu, %zu (%zu) total: ", s_cell[0], s_cell[1], possi_len);
+                        LOG("possi at %zu, %zu (%zu) total: ", s_cell[0], s_cell[1], possi_len);
 
-                for (size_t i = 0; i < possi_len; i++)
-                    LOG("%i, ", possi_[i]);
+                        for (size_t i = 0; i < possi_len; i++)
+                            LOG("%i, ", possi_[i]);
 
-                LOG("\n");
-            }
+                        LOG("\n");
+                    }
 
-            LOG("solutions (%zu):\n", sol_len);
+                    LOG("solutions (%zu):\n", sol_len);
             
-            // iter solutions
-            for (size_t i = 0; i < sol_len; i++) {
-                print_board(solutions[i]);
-            }
+                    // iter solutions
+                    for (size_t i = 0; i < sol_len; i++) {
+                        print_board(solutions[i]);
+                    }
 #endif
+                }
+
+                break;
+            case SOLUTION_STATE:
+                if (IsKeyPressed(KEY_L) && solution_index < sol_len - 1) solution_index++;
+                if (IsKeyPressed(KEY_H) && solution_index > 0) solution_index--;
+
+                if (IsKeyPressed(KEY_B)) {
+                    state = BOARD_STATE;
+                }
+
+                break;
+        }
+
+        board *drawn_board;
+
+        switch (state) {
+            case BOARD_STATE:
+                drawn_board = &board_;
+                break;
+            case SOLUTION_STATE:
+                drawn_board = &solutions[solution_index];
+                break;
         }
 
         BeginDrawing();
@@ -92,7 +128,7 @@ int main()
         for (int y = 0; y <= BOARD_SIZE; y += CELL_SIZE) DrawLine(0, y, BOARD_SIZE, y, BLACK);
 
         for (int i = 0; i < 81; i++) {
-            int num = board_[i];
+            int num = (*drawn_board)[i];
 
             if (num == 0) continue;
 
@@ -108,14 +144,16 @@ int main()
             DrawText(chr, sx, sy, 50, BLACK);
         }
 
-        // draw selected cell
-        DrawRectangleLines(
-            s_cell[0] * CELL_SIZE,
-            s_cell[1] * CELL_SIZE,
-            CELL_SIZE,
-            CELL_SIZE,
-            BLUE
-        );
+        // draw selected cell if board state
+        if (state == BOARD_STATE) {
+            DrawRectangleLines(
+                s_cell[0] * CELL_SIZE,
+                s_cell[1] * CELL_SIZE,
+                CELL_SIZE,
+                CELL_SIZE,
+                BLUE
+            );
+        }
         
         EndDrawing();
     }
