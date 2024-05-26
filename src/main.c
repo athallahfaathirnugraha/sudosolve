@@ -34,7 +34,7 @@ int main()
     board solutions[100];
     size_t sol_len = 0;
     
-    InitWindow(BOARD_SIZE, BOARD_SIZE, "sudoku solver");
+    InitWindow(BOARD_SIZE, BOARD_SIZE + 11, "sudoku solver");
 
     while (!WindowShouldClose()) {
         switch (state) {
@@ -155,6 +155,20 @@ int main()
                 BLUE
             );
         }
+
+        // bottom text
+        char btext[1024];
+
+        switch (state) {
+            case BOARD_STATE:
+                strcpy(btext, "athallahfaathirnugraha");
+                break;
+            case SOLUTION_STATE:
+                strcpy(btext, TextFormat("found %zu/%zu solutions", solution_index + 1, sol_len));
+                break;
+        }
+
+        DrawText(btext, 10, BOARD_SIZE + 1, 10, BLACK);
         
         EndDrawing();
     }
