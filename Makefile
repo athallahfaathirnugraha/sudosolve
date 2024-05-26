@@ -29,7 +29,7 @@ depreq/%.d: src/%.c
 obj/%.o: src/%.c depreq/%.d
 	@echo "creating object file $@"
 	mkdir -p $(dir $@)
-	gcc -c $(CFLAGS) $< -o $@
+	gcc -c $(CFLAGS) $< -o $@ -g
 
 deps/raylib/src/libraylib.a:
 	@echo "creating raylib"
