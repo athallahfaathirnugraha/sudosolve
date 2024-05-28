@@ -39,11 +39,13 @@ int main()
     while (!WindowShouldClose()) {
         switch (state) {
             case BOARD_STATE:
+                // selection
                 if (IsKeyPressed(KEY_H) && s_cell[0] > 0) s_cell[0] -= 1;
                 if (IsKeyPressed(KEY_J) && s_cell[1] < 8) s_cell[1] += 1;
                 if (IsKeyPressed(KEY_K) && s_cell[1] > 0) s_cell[1] -= 1;
                 if (IsKeyPressed(KEY_L) && s_cell[0] < 8) s_cell[0] += 1;
 
+                // cells
                 {
                     size_t i = s_cell[1] * 9 + s_cell[0];
 
