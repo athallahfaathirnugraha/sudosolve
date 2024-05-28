@@ -69,7 +69,15 @@ int main()
                     for (int i = 0; i < 81; i++) board_[i] = 0;
                 }
 
+                // solve
                 if (IsKeyPressed(KEY_ENTER)) {
+                    // validate
+                    if (validate_board(board_)) LOG("valid\n");
+                    else {
+                        LOG("invalid\n");
+                        goto skip_solve;
+                    }
+
                     solve(board_, solutions, &sol_len);
                     state = SOLUTION_STATE;
                     solution_index = 0;
@@ -115,6 +123,8 @@ int main()
                     }
 #endif
                 }
+
+skip_solve:
 
                 break;
             case SOLUTION_STATE:

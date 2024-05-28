@@ -13,6 +13,81 @@ void print_board(board board)
     }
 }
 
+int validate_hori(board board, size_t y)
+{
+    int donelist[9];
+    for (size_t i = 0; i < 9; i++) donelist[i] = 0;
+    
+    for (size_t x = 0; x < 9; x++) {
+        int val = board_get(board, x, y);
+
+        if (val--) {
+            if (donelist[val]) return 0;
+            donelist[val] = 1;
+        }
+    }
+
+    return 1;
+}
+
+int validate_vert(board board, size_t x)
+{
+    int donelist[9];
+    for (size_t i = 0; i < 9; i++) donelist[i] = 0;
+
+    for (size_t y = 0; y < 9; y++) {
+        int val = board_get(board, x, y);
+
+        if (val--) {
+            if (donelist[val]) return 0;
+            donelist[val] = 1;
+        }
+    }
+
+    return 1;
+}
+
+int validate_box(board board, size_t x_, size_t y_)
+{
+    int donelist[9];
+    for (size_t i = 0; i < 9; i++) donelist[i] = 0;
+    
+    size_t bx = x_ * 3;
+    size_t by = y_ * 3;
+
+    for (size_t x = bx; x < bx + 3; x++) {
+        for (size_t y = by; y < by + 3; y++) {
+            int val = board_get(board, x, y);
+
+            if (val--) {
+                if (donelist[val]) return 0;
+                donelist[val] = 1;
+            }
+        }
+    }
+
+    return 1;
+}
+
+int validate_board(board board)
+{
+    for (size_t x = 0; x < 9; x++) {
+        if (!validate_vert(board, x)) return 0;
+    }
+
+    for (size_t y = 0; y < 9; y++) {
+        if (!validate_hori(board, y)) return 0;
+    }
+
+    for (size_t x = 0; x < 3; x++) {
+        for (size_t y = 0; y < 3; y++) {
+            if (!validate_box(board, x, y)) return 0;
+        }
+    }
+
+    return 1;
+}
+
 int board_get(board board, size_t x, size_t y)
 {
     return board[y * 9 + x];

@@ -8,6 +8,14 @@ typedef int board[81];
 
 void print_board(board board);
 
+// 0 = invalid, 1 = valid
+int validate_hori(board board, size_t y);
+int validate_vert(board board, size_t x);
+// x & y is only 0-2
+int validate_box(board board, size_t x, size_t y);
+
+int validate_board(board board);
+
 int board_get(board board, size_t x, size_t y);
 void itoxy(size_t i, size_t *x, size_t *y);
 
