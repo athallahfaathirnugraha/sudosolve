@@ -64,6 +64,11 @@ int main()
                     if (IsKeyPressed(KEY_NINE)) board_[i] = 9;
                 }
 
+                // clear board
+                if (IsKeyPressed(KEY_C)) {
+                    for (int i = 0; i < 81; i++) board_[i] = 0;
+                }
+
                 if (IsKeyPressed(KEY_ENTER)) {
                     solve(board_, solutions, &sol_len);
                     state = SOLUTION_STATE;
