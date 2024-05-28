@@ -49,6 +49,17 @@ int main()
 
                     if (IsKeyPressed(KEY_I) && board_[i] < 9) board_[i] += 1;
                     if (IsKeyPressed(KEY_O) && board_[i] > 0) board_[i] -= 1;
+
+                    if (IsKeyPressed(KEY_ZERO)) board_[i] = 0;
+                    if (IsKeyPressed(KEY_ONE)) board_[i] = 1;
+                    if (IsKeyPressed(KEY_TWO)) board_[i] = 2;
+                    if (IsKeyPressed(KEY_THREE)) board_[i] = 3;
+                    if (IsKeyPressed(KEY_FOUR)) board_[i] = 4;
+                    if (IsKeyPressed(KEY_FIVE)) board_[i] = 5;
+                    if (IsKeyPressed(KEY_SIX)) board_[i] = 6;
+                    if (IsKeyPressed(KEY_SEVEN)) board_[i] = 7;
+                    if (IsKeyPressed(KEY_EIGHT)) board_[i] = 8;
+                    if (IsKeyPressed(KEY_NINE)) board_[i] = 9;
                 }
 
                 if (IsKeyPressed(KEY_ENTER)) {
