@@ -5,6 +5,7 @@
 #include <string.h>
 
 #include "board.h"
+#include "timer.h"
 
 #define BOARD_SIZE 549
 #define CELL_SIZE BOARD_SIZE / 9
@@ -33,6 +34,9 @@ int main()
 
     board solutions[100];
     size_t sol_len = 0;
+
+    timer invalid_timer = new_timer(1);
+    finish_timer(&invalid_timer);
     
     InitWindow(BOARD_SIZE, BOARD_SIZE + 11, "sudoku solver");
 
@@ -75,6 +79,7 @@ int main()
                     if (validate_board(board_)) LOG("valid\n");
                     else {
                         LOG("invalid\n");
+                        reset_timer(&invalid_timer);
                         goto skip_solve;
                     }
 
@@ -187,13 +192,17 @@ skip_solve:
         // bottom text
         char btext[1024];
 
-        switch (state) {
-            case BOARD_STATE:
-                strcpy(btext, "athallahfaathirnugraha");
-                break;
-            case SOLUTION_STATE:
-                strcpy(btext, TextFormat("found %zu/%zu solutions", solution_index + 1, sol_len));
-                break;
+        if (!update_timer(&invalid_timer)) {
+            strcpy(btext, "nulisnya yg bener atuh");
+        } else {
+            switch (state) {
+                case BOARD_STATE:
+                    strcpy(btext, "athallahfaathirnugraha");
+                    break;
+                case SOLUTION_STATE:
+                    strcpy(btext, TextFormat("found %zu/%zu solutions", solution_index + 1, sol_len));
+                    break;
+            }
         }
 
         DrawText(btext, 10, BOARD_SIZE + 1, 10, BLACK);
