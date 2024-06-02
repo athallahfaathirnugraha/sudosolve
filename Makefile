@@ -1,9 +1,16 @@
-SRCS := $(wildcard src/*.c)
-OBJS := $(patsubst src/%.c,obj/%.o,$(SRCS))
-DEPREQ := $(patsubst src/%.c,depreq/%.d,$(SRCS))
-
 INCLUDE := -I deps/raylib/src
+
+ifeq ($(RELEASE),1)
 CFLAGS := $(INCLUDE)
+TAR_DIR := release
+else
+CFLAGS := $(INCLUDE) -DDEBUG -g 
+TAR_DIR := debug
+endif
+
+SRCS := $(wildcard src/*.c)
+OBJS := $(patsubst src/%.c,obj/$(TAR_DIR)/%.o,$(SRCS))
+DEPREQ := $(patsubst src/%.c,depreq/$(TAR_DIR)/%.d,$(SRCS))
 
 LFLAGS := -framework CoreVideo -framework IOKit -framework Cocoa -framework GLUT -framework OpenGL
 
@@ -11,12 +18,12 @@ DEPS := deps/raylib/src/libraylib.a
 
 .PHONY: clean_all clean_raylib clean
 
-out/sudosolve: $(DEPREQ) $(OBJS) $(DEPS)
+out/$(TAR_DIR)/sudosolve: $(DEPREQ) $(OBJS) $(DEPS)
 	@echo "creating executable"
-	mkdir -p out
+	mkdir -p $(dir $@)
 	gcc $(OBJS) $(LFLAGS) $(DEPS) -o $@
 
-depreq/%.d: src/%.c
+depreq/$(TAR_DIR)/%.d: src/%.c
 	@echo "creating dependency file $@"
 	mkdir -p $(dir $@)
 	rm -rf $@
@@ -26,10 +33,10 @@ depreq/%.d: src/%.c
 
 -include $(DEPREQ)
 
-obj/%.o: src/%.c depreq/%.d
+obj/$(TAR_DIR)/%.o: src/%.c depreq/$(TAR_DIR)/%.d
 	@echo "creating object file $@"
 	mkdir -p $(dir $@)
-	gcc -c $(CFLAGS) $< -o $@ -g
+	gcc -c $(CFLAGS) $< -o $@
 
 deps/raylib/src/libraylib.a:
 	@echo "creating raylib"

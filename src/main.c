@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <limits.h>
 
 #include "board.h"
 #include "timer.h"
@@ -10,10 +11,10 @@
 #define BOARD_SIZE 549
 #define CELL_SIZE BOARD_SIZE / 9
 
-#ifdef RELEASE
-#define LOG(x)
-#else
+#ifdef DEBUG
 #define LOG(...) printf(__VA_ARGS__)
+#else
+#define LOG(...)
 #endif
 
 typedef enum state
@@ -37,6 +38,10 @@ int main()
 
     timer invalid_timer = new_timer(1);
     finish_timer(&invalid_timer);
+
+#ifndef DEBUG
+    SetTraceLogLevel(INT_MAX);
+#endif
     
     InitWindow(BOARD_SIZE, BOARD_SIZE + 11, "sudoku solver");
 
@@ -87,7 +92,7 @@ int main()
                     state = SOLUTION_STATE;
                     solution_index = 0;
 
-#ifndef RELEASE
+#ifdef DEBUG
                     // neighbors
                     {
                         size_t neighbors_[40];
